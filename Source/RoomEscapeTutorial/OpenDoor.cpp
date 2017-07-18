@@ -2,6 +2,9 @@
 
 #include "OpenDoor.h"
 #include "Gameframework/Actor.h"
+#include "GameFramework/PlayerController.h"
+#include "Engine/World.h"
+
 
 
 // Sets default values for this component's properties
@@ -20,14 +23,19 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AActor *Owner = GetOwner();
-	FString Rotation = Owner->GetActorRotation().ToString();
-	UE_LOG(LogTemp, Warning, TEXT("%s rotation is %s"), *Owner->GetName(), *Rotation);
-	FRotator DesiredRotation = FRotator(0, -90, 0);
-	Owner->SetActorRotation(DesiredRotation);
-	Rotation = Owner->GetActorRotation().ToString();
-	UE_LOG(LogTemp, Warning, TEXT("%s rotation is %s"), *Owner->GetName(), *Rotation);
+	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 	
+	/*FString Rotation = Owner->GetActorRotation().ToString();
+	UE_LOG(LogTemp, Warning, TEXT("%s rotation is %s"), *Owner->GetName(), *Rotation);
+	Rotation = Owner->GetActorRotation().ToString();
+	UE_LOG(LogTemp, Warning, TEXT("%s rotation is %s"), *Owner->GetName(), *Rotation);*/	
+}
+
+void UOpenDoor::OpenDoor()
+{
+	AActor *Owner = GetOwner();
+	FRotator DesiredRotation = FRotator(0, OpenAngle, 0);
+	Owner->SetActorRotation(DesiredRotation);
 }
 
 
@@ -36,6 +44,10 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	// Poll for trigger
+	if (PressurePlate->IsOverlappingActor(ActorThatOpens))
+	{
+		OpenDoor();
+	}
 }
 
