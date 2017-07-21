@@ -17,19 +17,15 @@ public:
 	// Sets default values for this component's properties
 	UGrabber();
 
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	FVector GetReachLineEnd();
+	FVector GetReachLineStart();
+	const FHitResult GetFirstPhysicsBodyInReach();
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-	void SetupInputComponent();
-
-	void FindPhysicsHandleComponent();
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-	const FHitResult GetFirstPhysicsBodyInReach();
 
 		
 private:
@@ -38,7 +34,10 @@ private:
 	UPhysicsHandleComponent* PhysicsHandler = nullptr;
 	UInputComponent* InputComponent = nullptr;
 
+	FVector LineTraceEnd;
+
+	void SetupInputComponent();
+	void FindPhysicsHandleComponent();
 	void Grab();
-	void Release();
-	
+	void Release();	
 };
