@@ -119,7 +119,7 @@ void UGrabber::Grab()
 
 	if (ActorHit)
 	{
-		//PhysicsHandler->GrabComponentAtLocation(ComponentToGrab, NAME_None, ActorHit->GetActorLocation());
+		PhysicsHandler->GrabComponentAtLocation(ComponentToGrab, NAME_None, ActorHit->GetActorLocation());
 	}
 
 }
