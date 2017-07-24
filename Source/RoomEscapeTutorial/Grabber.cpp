@@ -30,6 +30,8 @@ void UGrabber::BeginPlay()
 void UGrabber::SetupInputComponent()
 {
 	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+
+	if (!InputComponent) { return; }
 	if (InputComponent)
 	{
 		if (LOG) UE_LOG(LogTemp, Warning, TEXT("Input controller found at %s"), *GetOwner()->GetName());
@@ -47,6 +49,8 @@ void UGrabber::SetupInputComponent()
 void UGrabber::FindPhysicsHandleComponent()
 {
 	PhysicsHandler = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+
+	if (!PhysicsHandler) { return; }
 	if (PhysicsHandler)
 	{
 		// Physics handle is found
@@ -66,7 +70,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 	GetReachLineEnd();
 
-
+	if (!PhysicsHandler) { return; }
 	if (PhysicsHandler->GrabbedComponent)
 	{
 		PhysicsHandler->SetTargetLocation(GetReachLineEnd());

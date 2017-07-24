@@ -6,6 +6,7 @@
 #include "Engine/TriggerVolume.h"
 #include "OpenDoor.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDoorEvent);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ROOMESCAPETUTORIAL_API UOpenDoor : public UActorComponent
@@ -17,6 +18,12 @@ public:
 	UOpenDoor();
 	void OpenDoor();
 	void CloseDoor();
+
+	UPROPERTY(BlueprintAssignable)
+	FDoorEvent OnOpen;
+
+	UPROPERTY(BlueprintAssignable)
+	FDoorEvent OnClose;
 
 
 protected:
@@ -35,19 +42,20 @@ private:
 	float CloseAngle = 0.0f;
 
 	UPROPERTY(EditAnywhere)
-	ATriggerVolume* PressurePlate;	
+	ATriggerVolume* PressurePlate = nullptr;
 
 	UPROPERTY(EditAnywhere)
-	AActor* ActorThatOpens;
+	AActor* ActorThatOpens = nullptr;
 
 	UPROPERTY(EditAnywhere)
 	float DoorCloseDelay = 1.f;
 
 	float LastDoorOpenTime;
 
-	AActor* Owner;
+	AActor* Owner = nullptr;
 
 	float GetTotalMassOfActorsOnPlate();
 
-
+	UPROPERTY(EditAnywhere)
+	float WeightToOpenDoor = 10.f;
 };
