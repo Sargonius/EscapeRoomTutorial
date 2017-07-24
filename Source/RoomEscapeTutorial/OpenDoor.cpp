@@ -27,17 +27,6 @@ void UOpenDoor::BeginPlay()
 	}
 }
 
-void UOpenDoor::OpenDoor()
-{	
-	Owner->SetActorRotation(FRotator(0, OpenAngle, 0));
-}
-
-void UOpenDoor::CloseDoor()
-{
-	Owner->SetActorRotation(FRotator(0, CloseAngle, 0));
-}
-
-
 // Called every frame
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -46,30 +35,29 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	// Poll for trigger
 	if (GetTotalMassOfActorsOnPlate() >= WeightToOpenDoor)
 	{
-		OpenDoor();
-		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
+		OnOpen.Broadcast();
 	}
-
-	// Check if it's time to close the door
-	if (GetWorld()->GetTimeSeconds() - LastDoorOpenTime > DoorCloseDelay)
+	else
 	{
-		CloseDoor();
+		OnClose.Broadcast();
 	}
 }
 
 float UOpenDoor::GetTotalMassOfActorsOnPlate()
 {
-	float TotalMass = 0.f;
+	float TotalMass = 0.0f;
 
 	// Find all overlapping actors
 	TArray<AActor*> OverlappingActors;
 
-	if (!PressurePlate) { return; }
-	PressurePlate->GetOverlappingActors(OverlappingActors);
+	if (PressurePlate) 
+	{  
+		PressurePlate->GetOverlappingActors(OverlappingActors);
 
-	for (const auto& Actor : OverlappingActors)
-	{
-		TotalMass += Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+		for (const auto& Actor : OverlappingActors)
+		{
+			TotalMass += Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+		}
 	}
 	return TotalMass;
 }
